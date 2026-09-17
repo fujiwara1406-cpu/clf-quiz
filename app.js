@@ -457,7 +457,7 @@ function onTouchCancel() {
 function init() {
   loadScore();
   updateScore();
-  showStatus(`${ALL_QUESTIONS.length} 問を読み込みました。クイズから始めてください。`, "info");
+  showStatus("", "");
   updateSavedUi();
   showQuestion();
   renderList();

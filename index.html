@@ -9,17 +9,14 @@
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.webmanifest">
   <title>CLF 一問一答</title>
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <header class="header">
     <h1>CLF 一問一答</h1>
-    <p>AWS Certified Cloud Practitioner（CLF-C02）・9月23日受験用。ITパスポートと同じ四択です。</p>
   </header>
 
   <main class="container">
-    <p id="status-message" class="status-message" aria-live="polite"></p>
-
     <nav class="tabs">
       <button type="button" class="tab active" id="tab-quiz" data-tab="quiz">クイズ</button>
       <button type="button" class="tab" id="tab-wrong" data-tab="wrong">保存</button>
@@ -27,33 +24,11 @@
     </nav>
 
     <section id="quiz-section" class="panel active">
-      <div class="saved-bar">
-        <button type="button" class="btn btn-primary" id="retry-saved-btn">保存した問題を解き直す（0問）</button>
-        <button type="button" class="btn btn-secondary hidden" id="exit-retry-btn">通常に戻る</button>
-      </div>
       <p id="retry-banner" class="retry-banner hidden">保存した問題の解き直し中。正解すると保存から外れます。</p>
-
-      <div class="filter-row" role="group" aria-label="ドメイン">
-        <button type="button" class="chip active" data-domain="ALL">すべて</button>
-        <button type="button" class="chip" data-domain="D1">D1 概念</button>
-        <button type="button" class="chip" data-domain="D2">D2 セキュリティ</button>
-        <button type="button" class="chip" data-domain="D3">D3 サービス</button>
-        <button type="button" class="chip" data-domain="D4">D4 請求</button>
-      </div>
+      <button type="button" class="btn btn-secondary hidden" id="exit-retry-btn">通常に戻る</button>
 
       <div id="quiz-card" class="quiz-card">
         <p id="quiz-progress" class="quiz-progress">0 / 0</p>
-
-        <div class="control-hint" aria-label="操作ヒント">
-          <p class="control-hint-title">キー / スワイプで回答</p>
-          <div class="control-hint-grid">
-            <span><kbd>W</kbd> / ↑ <strong>A</strong></span>
-            <span><kbd>A</kbd> / ← <strong>B</strong></span>
-            <span><kbd>S</kbd> / ↓ <strong>C</strong></span>
-            <span><kbd>D</kbd> / → <strong>D</strong></span>
-          </div>
-        </div>
-
         <p class="quiz-label" id="quiz-domain-label">問題</p>
         <p id="quiz-body" class="quiz-body"></p>
 
@@ -71,15 +46,43 @@
         <div class="quiz-actions">
           <button type="button" class="btn btn-save hidden" id="save-wrong-btn">この問題を保存</button>
           <button type="button" class="btn btn-primary hidden" id="next-btn">次の問題へ</button>
-          <button type="button" class="btn btn-secondary" id="reset-score-btn">スコアをリセット</button>
         </div>
       </div>
 
       <p id="quiz-empty" class="empty-text hidden">この条件の問題がありません。</p>
 
-      <div class="score-panel">
-        <p id="score" class="score">スコア: 0 / 0</p>
-        <p id="accuracy" class="accuracy">正答率: -</p>
+      <div class="quiz-extras">
+        <p id="status-message" class="status-message" aria-live="polite"></p>
+
+        <div class="saved-bar">
+          <button type="button" class="btn btn-primary" id="retry-saved-btn">保存した問題を解き直す（0問）</button>
+        </div>
+
+        <div class="filter-row" role="group" aria-label="ドメイン">
+          <button type="button" class="chip active" data-domain="ALL">すべて</button>
+          <button type="button" class="chip" data-domain="D1">D1 概念</button>
+          <button type="button" class="chip" data-domain="D2">D2 セキュリティ</button>
+          <button type="button" class="chip" data-domain="D3">D3 サービス</button>
+          <button type="button" class="chip" data-domain="D4">D4 請求</button>
+        </div>
+
+        <div class="control-hint" aria-label="操作ヒント">
+          <p class="control-hint-title">キー / スワイプで回答</p>
+          <div class="control-hint-grid">
+            <span><kbd>W</kbd> / ↑ <strong>A</strong></span>
+            <span><kbd>A</kbd> / ← <strong>B</strong></span>
+            <span><kbd>S</kbd> / ↓ <strong>C</strong></span>
+            <span><kbd>D</kbd> / → <strong>D</strong></span>
+          </div>
+        </div>
+
+        <div class="score-panel">
+          <p id="score" class="score">スコア: 0 / 0</p>
+          <p id="accuracy" class="accuracy">正答率: -</p>
+          <button type="button" class="btn btn-secondary" id="reset-score-btn">スコアをリセット</button>
+        </div>
+
+        <p class="about-text">AWS Certified Cloud Practitioner（CLF-C02）・9月23日受験用。ITパスポートと同じ四択です。</p>
       </div>
     </section>
 
@@ -102,6 +105,6 @@
   </main>
 
   <script src="questions.js"></script>
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>
