@@ -181,6 +181,41 @@ body.is-swipe-lock {
   background: #e88b00;
 }
 
+.btn-save {
+  background: #232f3e;
+  color: #fff;
+}
+
+.btn-save:hover {
+  background: #161d27;
+}
+
+.btn-save.is-saved {
+  background: #166534;
+}
+
+.saved-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.saved-bar .btn {
+  flex: 1 1 12rem;
+}
+
+.retry-banner {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  color: #9a3412;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .btn-secondary {
   background: #e5e7eb;
   color: #111827;
@@ -213,11 +248,20 @@ body.is-swipe-lock {
 }
 
 .question-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   padding: 1rem;
   margin-bottom: 0.75rem;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
+}
+
+.question-actions .btn {
+  width: 100%;
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .question-text {
@@ -415,7 +459,8 @@ body.is-swipe-lock {
   }
 
   .form-actions .btn,
-  .quiz-actions .btn {
+  .quiz-actions .btn,
+  .saved-bar .btn {
     flex: 1 1 100%;
     width: 100%;
   }

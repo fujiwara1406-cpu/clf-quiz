@@ -28,6 +28,10 @@ const elements = {
   quizResult: document.getElementById("quiz-result"),
   quizExplain: document.getElementById("quiz-explain"),
   nextBtn: document.getElementById("next-btn"),
+  saveWrongBtn: document.getElementById("save-wrong-btn"),
+  retrySavedBtn: document.getElementById("retry-saved-btn"),
+  exitRetryBtn: document.getElementById("exit-retry-btn"),
+  retryBanner: document.getElementById("retry-banner"),
   resetScoreBtn: document.getElementById("reset-score-btn"),
   score: document.getElementById("score"),
   accuracy: document.getElementById("accuracy"),
@@ -58,6 +62,7 @@ let answered = false;
 let correctCount = 0;
 let answeredCount = 0;
 let wrongOnly = false;
+let lastMissedId = null;
 let isQuizTabActive = true;
 let touchStartX = 0;
 let touchStartY = 0;
@@ -95,6 +100,47 @@ function loadScore() {
     correctCount = 0;
     answeredCount = 0;
   }
+}
+
+function updateSavedUi() {
+  const count = loadWrongIds().size;
+  if (elements.retrySavedBtn) {
+    elements.retrySavedBtn.textContent = `保存した問題を解き直す（${count}問）`;
+    elements.retrySavedBtn.disabled = count === 0;
+  }
+  if (elements.tabWrong) {
+    elements.tabWrong.textContent = count ? `保存 ${count}` : "保存";
+  }
+  if (elements.retryBanner) {
+    elements.retryBanner.classList.toggle("hidden", !wrongOnly);
+  }
+  if (elements.exitRetryBtn) {
+    elements.exitRetryBtn.classList.toggle("hidden", !wrongOnly);
+  }
+}
+
+function setSaveButtonState(mode) {
+  const btn = elements.saveWrongBtn;
+  if (!btn) {
+    return;
+  }
+  if (mode === "hidden") {
+    btn.classList.add("hidden");
+    btn.classList.remove("is-saved");
+    btn.disabled = false;
+    btn.textContent = "この問題を保存";
+    return;
+  }
+  btn.classList.remove("hidden");
+  if (mode === "saved") {
+    btn.classList.add("is-saved");
+    btn.disabled = true;
+    btn.textContent = "保存済み";
+    return;
+  }
+  btn.classList.remove("is-saved");
+  btn.disabled = false;
+  btn.textContent = "この問題を保存";
 }
 
 function saveScore() {
@@ -156,14 +202,20 @@ function updateScore() {
 function showQuestion() {
   pickNext();
   answered = false;
+  lastMissedId = null;
+  setSaveButtonState("hidden");
   elements.quizResult.textContent = "";
   elements.quizResult.className = "quiz-result";
   elements.quizExplain.classList.add("hidden");
   elements.nextBtn.classList.add("hidden");
+  updateSavedUi();
 
   if (!currentQuestion) {
     elements.quizCard.classList.add("hidden");
     elements.quizEmpty.classList.remove("hidden");
+    elements.quizEmpty.textContent = wrongOnly
+      ? "保存した問題はありません。通常に戻るか、間違えた問題を保存してください。"
+      : "この条件の問題がありません。";
     return;
   }
 
@@ -172,7 +224,7 @@ function showQuestion() {
   elements.quizDomainLabel.textContent = DOMAIN_LABEL[currentQuestion.domain] || "問題";
   elements.quizBody.textContent = currentQuestion.body;
   elements.quizProgress.textContent = wrongOnly
-    ? `弱点 ${pool.length} 問から出題`
+    ? `保存した問題 ${pool.length} 問から出題`
     : `${DOMAIN_LABEL[currentQuestion.domain] || ""} ｜ 全 ${pool.length} 問`;
   renderChoices();
 }
@@ -200,14 +252,19 @@ function answer(choice) {
   const isCorrect = choice === currentQuestion.correct;
   if (isCorrect) {
     correctCount += 1;
-    unmarkWrong(currentQuestion.id);
+    if (wrongOnly) {
+      unmarkWrong(currentQuestion.id);
+    }
     elements.quizResult.textContent = "正解";
     elements.quizResult.className = "quiz-result correct";
+    setSaveButtonState("hidden");
   } else {
-    markWrong(currentQuestion.id);
+    lastMissedId = currentQuestion.id;
+    const alreadySaved = loadWrongIds().has(currentQuestion.id);
     const right = currentQuestion[`choice_${currentQuestion.correct.toLowerCase()}`];
     elements.quizResult.textContent = `不正解（正解は ${currentQuestion.correct}. ${right}）`;
     elements.quizResult.className = "quiz-result incorrect";
+    setSaveButtonState(alreadySaved ? "saved" : "ready");
   }
 
   ["A", "B", "C", "D"].forEach((letter) => {
@@ -225,6 +282,38 @@ function answer(choice) {
   elements.quizExplain.classList.toggle("hidden", !currentQuestion.explain);
   elements.nextBtn.classList.remove("hidden");
   updateScore();
+  updateSavedUi();
+}
+
+function saveCurrentWrong() {
+  const id = lastMissedId || (currentQuestion && currentQuestion.id);
+  if (!id) {
+    return;
+  }
+  markWrong(id);
+  setSaveButtonState("saved");
+  updateSavedUi();
+  renderWrongList();
+  showStatus("この問題を保存しました。上のボタンで解き直せます。", "success");
+}
+
+function startSavedRetry() {
+  if (loadWrongIds().size === 0) {
+    showStatus("保存した問題がまだありません。間違えたあと「この問題を保存」を押してください。", "error");
+    return;
+  }
+  wrongOnly = true;
+  domainFilter = "ALL";
+  document.querySelectorAll(".chip").forEach((node) => node.classList.toggle("active", node.dataset.domain === "ALL"));
+  switchTab("quiz");
+  showQuestion();
+  showStatus("保存した問題の解き直しを開始しました。", "info");
+}
+
+function exitSavedRetry() {
+  wrongOnly = false;
+  showQuestion();
+  showStatus("通常の出題に戻しました。", "info");
 }
 
 function renderWrongList() {
@@ -235,7 +324,31 @@ function renderWrongList() {
   items.forEach((item) => {
     const li = document.createElement("li");
     li.className = "question-item";
-    li.innerHTML = `<p class="question-text">${item.body}</p><p class="question-meta">${DOMAIN_LABEL[item.domain]} ／ 正解 ${item.correct}. ${item[`choice_${item.correct.toLowerCase()}`]}</p>`;
+
+    const text = document.createElement("p");
+    text.className = "question-text";
+    text.textContent = item.body;
+
+    const meta = document.createElement("p");
+    meta.className = "question-meta";
+    meta.textContent = `${DOMAIN_LABEL[item.domain]} ／ 正解 ${item.correct}. ${item[`choice_${item.correct.toLowerCase()}`]}`;
+
+    const actions = document.createElement("div");
+    actions.className = "question-actions";
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "btn";
+    removeBtn.textContent = "この問題を削除";
+    removeBtn.addEventListener("click", () => {
+      unmarkWrong(item.id);
+      updateSavedUi();
+      renderWrongList();
+    });
+    actions.appendChild(removeBtn);
+
+    li.appendChild(text);
+    li.appendChild(meta);
+    li.appendChild(actions);
     elements.wrongList.appendChild(li);
   });
 }
@@ -345,6 +458,7 @@ function init() {
   loadScore();
   updateScore();
   showStatus(`${ALL_QUESTIONS.length} 問を読み込みました。クイズから始めてください。`, "info");
+  updateSavedUi();
   showQuestion();
   renderList();
   renderWrongList();
@@ -364,22 +478,23 @@ function init() {
   });
 
   elements.nextBtn.addEventListener("click", showQuestion);
+  elements.saveWrongBtn.addEventListener("click", saveCurrentWrong);
+  elements.retrySavedBtn.addEventListener("click", startSavedRetry);
+  elements.exitRetryBtn.addEventListener("click", exitSavedRetry);
   elements.resetScoreBtn.addEventListener("click", () => {
     correctCount = 0;
     answeredCount = 0;
     updateScore();
     showQuestion();
   });
-  elements.retryWrongBtn.addEventListener("click", () => {
-    wrongOnly = true;
-    domainFilter = "ALL";
-    document.querySelectorAll(".chip").forEach((node) => node.classList.toggle("active", node.dataset.domain === "ALL"));
-    switchTab("quiz");
-    showQuestion();
-  });
+  elements.retryWrongBtn.addEventListener("click", startSavedRetry);
   elements.clearWrongBtn.addEventListener("click", () => {
     saveWrongIds(new Set());
+    updateSavedUi();
     renderWrongList();
+    if (wrongOnly) {
+      showQuestion();
+    }
   });
   elements.tabQuiz.addEventListener("click", () => switchTab("quiz"));
   elements.tabWrong.addEventListener("click", () => switchTab("wrong"));

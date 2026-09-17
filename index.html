@@ -9,7 +9,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.webmanifest">
   <title>CLF 一問一答</title>
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <header class="header">
@@ -22,11 +22,17 @@
 
     <nav class="tabs">
       <button type="button" class="tab active" id="tab-quiz" data-tab="quiz">クイズ</button>
-      <button type="button" class="tab" id="tab-wrong" data-tab="wrong">弱点</button>
+      <button type="button" class="tab" id="tab-wrong" data-tab="wrong">保存</button>
       <button type="button" class="tab" id="tab-list" data-tab="list">一覧</button>
     </nav>
 
     <section id="quiz-section" class="panel active">
+      <div class="saved-bar">
+        <button type="button" class="btn btn-primary" id="retry-saved-btn">保存した問題を解き直す（0問）</button>
+        <button type="button" class="btn btn-secondary hidden" id="exit-retry-btn">通常に戻る</button>
+      </div>
+      <p id="retry-banner" class="retry-banner hidden">保存した問題の解き直し中。正解すると保存から外れます。</p>
+
       <div class="filter-row" role="group" aria-label="ドメイン">
         <button type="button" class="chip active" data-domain="ALL">すべて</button>
         <button type="button" class="chip" data-domain="D1">D1 概念</button>
@@ -63,6 +69,7 @@
         <p id="quiz-explain" class="quiz-explain hidden"></p>
 
         <div class="quiz-actions">
+          <button type="button" class="btn btn-save hidden" id="save-wrong-btn">この問題を保存</button>
           <button type="button" class="btn btn-primary hidden" id="next-btn">次の問題へ</button>
           <button type="button" class="btn btn-secondary" id="reset-score-btn">スコアをリセット</button>
         </div>
@@ -77,14 +84,14 @@
     </section>
 
     <section id="wrong-section" class="panel">
-      <h2>間違えた問題</h2>
-      <p class="ai-lead">不正解になった問題だけを繰り返します。消すと最初からになります。</p>
+      <h2>保存した問題</h2>
+      <p class="ai-lead">間違えた問題を保存すると、ここに残ります。ボタンひとつで解き直せます。</p>
       <div class="form-actions">
-        <button type="button" class="btn btn-primary" id="retry-wrong-btn">弱点だけ解く</button>
-        <button type="button" class="btn btn-secondary" id="clear-wrong-btn">弱点をクリア</button>
+        <button type="button" class="btn btn-primary" id="retry-wrong-btn">保存した問題を解き直す</button>
+        <button type="button" class="btn btn-secondary" id="clear-wrong-btn">保存をすべて消す</button>
       </div>
       <ul id="wrong-list" class="question-list"></ul>
-      <p id="wrong-empty" class="empty-text">まだ間違えた問題はありません。</p>
+      <p id="wrong-empty" class="empty-text">まだ保存した問題はありません。クイズで間違えたあと「この問題を保存」を押してください。</p>
     </section>
 
     <section id="list-section" class="panel">
@@ -95,6 +102,6 @@
   </main>
 
   <script src="questions.js"></script>
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
