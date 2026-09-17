@@ -257,6 +257,7 @@ function showQuestion() {
     ? `保存した問題 ${pool.length} 問から出題`
     : `${DOMAIN_LABEL[currentQuestion.domain] || ""} ｜ 全 ${pool.length} 問`;
   renderChoices();
+  elements.swipeFeedback.textContent = "";
   armSwipeLock();
   scrollQuizToTop();
 }
@@ -313,6 +314,7 @@ function answer(choice) {
   elements.quizExplain.textContent = currentQuestion.explain || "";
   elements.quizExplain.classList.toggle("hidden", !currentQuestion.explain);
   elements.nextBtn.classList.remove("hidden");
+  elements.swipeFeedback.textContent = "右スワイプで次の問題へ";
   updateScore();
   updateSavedUi();
   disarmSwipeLock();
@@ -441,7 +443,7 @@ function onKeyDown(event) {
 }
 
 function onTouchStart(event) {
-  if (!isQuizTabActive || answered || !event.changedTouches[0]) {
+  if (!isQuizTabActive || !event.changedTouches[0]) {
     return;
   }
   isSwipeGesture = false;
@@ -450,34 +452,57 @@ function onTouchStart(event) {
 }
 
 function onTouchMove(event) {
-  if (!isQuizTabActive || answered || !event.touches[0]) {
+  if (!isQuizTabActive || !event.touches[0]) {
     return;
   }
   const dx = event.touches[0].clientX - touchStartX;
   const dy = event.touches[0].clientY - touchStartY;
-  if (Math.max(Math.abs(dx), Math.abs(dy)) < 8) {
+  const absX = Math.abs(dx);
+  const absY = Math.abs(dy);
+  if (Math.max(absX, absY) < 8) {
     return;
   }
-  isSwipeGesture = true;
-  document.body.classList.add("is-swipe-lock");
-  event.preventDefault();
+
+  if (!answered) {
+    isSwipeGesture = true;
+    document.body.classList.add("is-swipe-lock");
+    event.preventDefault();
+    return;
+  }
+
+  if (dx > 8 && absX > absY) {
+    isSwipeGesture = true;
+    document.body.classList.add("is-swipe-lock");
+    event.preventDefault();
+  }
 }
 
 function onTouchEnd(event) {
-  if (!isQuizTabActive || answered || !event.changedTouches[0]) {
+  if (!isQuizTabActive || !event.changedTouches[0]) {
     unlockSwipeScroll();
     return;
   }
   const dx = event.changedTouches[0].clientX - touchStartX;
   const dy = event.changedTouches[0].clientY - touchStartY;
-  const shouldAnswer = isSwipeGesture && Math.max(Math.abs(dx), Math.abs(dy)) >= SWIPE_THRESHOLD;
+  const absX = Math.abs(dx);
+  const absY = Math.abs(dy);
+  const strong = isSwipeGesture && Math.max(absX, absY) >= SWIPE_THRESHOLD;
   unlockSwipeScroll();
-  if (!shouldAnswer) {
+  if (!strong) {
     return;
   }
+
+  if (answered) {
+    if (dx >= SWIPE_THRESHOLD && absX > absY) {
+      event.preventDefault();
+      showQuestion();
+    }
+    return;
+  }
+
   event.preventDefault();
   let direction = "right";
-  if (Math.abs(dy) > Math.abs(dx)) {
+  if (absY > absX) {
     direction = dy < 0 ? "up" : "down";
   } else {
     direction = dx < 0 ? "left" : "right";
