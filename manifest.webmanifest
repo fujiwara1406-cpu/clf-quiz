@@ -1,0 +1,10 @@
+{
+  "name": "CLF 一問一答",
+  "short_name": "CLF一問一答",
+  "description": "AWS Certified Cloud Practitioner（CLF-C02）四択クイズ",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#232F3E",
+  "theme_color": "#232F3E",
+  "lang": "ja"
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#232F3E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CLF一問一答">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>CLF 一問一答</title>
+  <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+  <header class="header">
+    <h1>CLF 一問一答</h1>
+    <p>AWS Certified Cloud Practitioner（CLF-C02）・9月23日受験用。ITパスポートと同じ四択です。</p>
+  </header>
+
+  <main class="container">
+    <p id="status-message" class="status-message" aria-live="polite"></p>
+
+    <nav class="tabs">
+      <button type="button" class="tab active" id="tab-quiz" data-tab="quiz">クイズ</button>
+      <button type="button" class="tab" id="tab-wrong" data-tab="wrong">弱点</button>
+      <button type="button" class="tab" id="tab-list" data-tab="list">一覧</button>
+    </nav>
+
+    <section id="quiz-section" class="panel active">
+      <div class="filter-row" role="group" aria-label="ドメイン">
+        <button type="button" class="chip active" data-domain="ALL">すべて</button>
+        <button type="button" class="chip" data-domain="D1">D1 概念</button>
+        <button type="button" class="chip" data-domain="D2">D2 セキュリティ</button>
+        <button type="button" class="chip" data-domain="D3">D3 サービス</button>
+        <button type="button" class="chip" data-domain="D4">D4 請求</button>
+      </div>
+
+      <div id="quiz-card" class="quiz-card">
+        <p id="quiz-progress" class="quiz-progress">0 / 0</p>
+
+        <div class="control-hint" aria-label="操作ヒント">
+          <p class="control-hint-title">キー / スワイプで回答</p>
+          <div class="control-hint-grid">
+            <span><kbd>W</kbd> / ↑ <strong>A</strong></span>
+            <span><kbd>A</kbd> / ← <strong>B</strong></span>
+            <span><kbd>S</kbd> / ↓ <strong>C</strong></span>
+            <span><kbd>D</kbd> / → <strong>D</strong></span>
+          </div>
+        </div>
+
+        <p class="quiz-label" id="quiz-domain-label">問題</p>
+        <p id="quiz-body" class="quiz-body"></p>
+
+        <div id="quiz-choices" class="quiz-choices">
+          <button type="button" class="btn choice-btn" id="choice-btn-a" data-choice="A">A</button>
+          <button type="button" class="btn choice-btn" id="choice-btn-b" data-choice="B">B</button>
+          <button type="button" class="btn choice-btn" id="choice-btn-c" data-choice="C">C</button>
+          <button type="button" class="btn choice-btn" id="choice-btn-d" data-choice="D">D</button>
+        </div>
+
+        <p id="swipe-feedback" class="swipe-feedback" aria-live="polite"></p>
+        <p id="quiz-result" class="quiz-result"></p>
+        <p id="quiz-explain" class="quiz-explain hidden"></p>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn btn-primary hidden" id="next-btn">次の問題へ</button>
+          <button type="button" class="btn btn-secondary" id="reset-score-btn">スコアをリセット</button>
+        </div>
+      </div>
+
+      <p id="quiz-empty" class="empty-text hidden">この条件の問題がありません。</p>
+
+      <div class="score-panel">
+        <p id="score" class="score">スコア: 0 / 0</p>
+        <p id="accuracy" class="accuracy">正答率: -</p>
+      </div>
+    </section>
+
+    <section id="wrong-section" class="panel">
+      <h2>間違えた問題</h2>
+      <p class="ai-lead">不正解になった問題だけを繰り返します。消すと最初からになります。</p>
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" id="retry-wrong-btn">弱点だけ解く</button>
+        <button type="button" class="btn btn-secondary" id="clear-wrong-btn">弱点をクリア</button>
+      </div>
+      <ul id="wrong-list" class="question-list"></ul>
+      <p id="wrong-empty" class="empty-text">まだ間違えた問題はありません。</p>
+    </section>
+
+    <section id="list-section" class="panel">
+      <h2>問題一覧</h2>
+      <p id="list-count" class="question-count">0 問</p>
+      <ul id="question-list" class="question-list"></ul>
+    </section>
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="app.js?v=2"></script>
+</body>
+</html>
