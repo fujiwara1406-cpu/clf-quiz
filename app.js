@@ -73,6 +73,35 @@ function unlockSwipeScroll() {
   document.body.classList.remove("is-swipe-lock");
 }
 
+function armSwipeLock() {
+  elements.quizSection.classList.add("is-swipe-armed");
+}
+
+function disarmSwipeLock() {
+  unlockSwipeScroll();
+  elements.quizSection.classList.remove("is-swipe-armed");
+}
+
+function scrollQuizToTop() {
+  if (document.activeElement && document.activeElement.blur) {
+    document.activeElement.blur();
+  }
+  const jump = () => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const header = document.querySelector(".header");
+    if (header) {
+      header.scrollIntoView({ block: "start", behavior: "auto" });
+    }
+  };
+  jump();
+  window.requestAnimationFrame(() => {
+    jump();
+    window.setTimeout(jump, 50);
+  });
+}
+
 function showStatus(message, type) {
   elements.statusMessage.textContent = message || "";
   elements.statusMessage.className = message ? `status-message ${type}` : "status-message";
@@ -211,6 +240,7 @@ function showQuestion() {
   updateSavedUi();
 
   if (!currentQuestion) {
+    disarmSwipeLock();
     elements.quizCard.classList.add("hidden");
     elements.quizEmpty.classList.remove("hidden");
     elements.quizEmpty.textContent = wrongOnly
@@ -227,6 +257,8 @@ function showQuestion() {
     ? `保存した問題 ${pool.length} 問から出題`
     : `${DOMAIN_LABEL[currentQuestion.domain] || ""} ｜ 全 ${pool.length} 問`;
   renderChoices();
+  armSwipeLock();
+  scrollQuizToTop();
 }
 
 function markWrong(id) {
@@ -283,6 +315,7 @@ function answer(choice) {
   elements.nextBtn.classList.remove("hidden");
   updateScore();
   updateSavedUi();
+  disarmSwipeLock();
 }
 
 function saveCurrentWrong() {
@@ -372,6 +405,11 @@ function switchTab(tabName) {
   elements.quizSection.classList.toggle("active", tabName === "quiz");
   elements.wrongSection.classList.toggle("active", tabName === "wrong");
   elements.listSection.classList.toggle("active", tabName === "list");
+  if (tabName === "quiz" && currentQuestion && !answered) {
+    armSwipeLock();
+  } else {
+    disarmSwipeLock();
+  }
   if (tabName === "wrong") {
     renderWrongList();
   }
@@ -403,7 +441,7 @@ function onKeyDown(event) {
 }
 
 function onTouchStart(event) {
-  if (!isQuizTabActive || !event.changedTouches[0]) {
+  if (!isQuizTabActive || answered || !event.changedTouches[0]) {
     return;
   }
   isSwipeGesture = false;
@@ -412,7 +450,7 @@ function onTouchStart(event) {
 }
 
 function onTouchMove(event) {
-  if (!isQuizTabActive || !event.touches[0]) {
+  if (!isQuizTabActive || answered || !event.touches[0]) {
     return;
   }
   const dx = event.touches[0].clientX - touchStartX;
@@ -426,7 +464,7 @@ function onTouchMove(event) {
 }
 
 function onTouchEnd(event) {
-  if (!isQuizTabActive || !event.changedTouches[0]) {
+  if (!isQuizTabActive || answered || !event.changedTouches[0]) {
     unlockSwipeScroll();
     return;
   }

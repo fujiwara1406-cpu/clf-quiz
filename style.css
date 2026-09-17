@@ -116,7 +116,9 @@ body.is-swipe-lock {
   display: block;
 }
 
-#quiz-section.panel.active {
+#quiz-section.panel.active.is-swipe-armed,
+#quiz-section.panel.active.is-swipe-armed .quiz-card,
+#quiz-section.panel.active.is-swipe-armed .choice-btn {
   touch-action: none;
   overscroll-behavior: none;
 }
@@ -280,8 +282,6 @@ body.is-swipe-lock {
 
 .quiz-card {
   margin-bottom: 1rem;
-  touch-action: none;
-  overscroll-behavior: none;
 }
 
 .control-hint {
@@ -391,7 +391,6 @@ body.is-swipe-lock {
   color: #111827;
   white-space: normal;
   word-break: break-word;
-  touch-action: none;
   padding: 0.7rem 0.9rem;
 }
 
