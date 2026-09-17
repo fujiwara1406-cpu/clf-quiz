@@ -431,12 +431,14 @@ body.is-swipe-lock {
 
 .quiz-explain {
   margin: 0 0 0.5rem;
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1rem;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
   border-radius: 8px;
   color: #1e3a8a;
   font-size: 0.95rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
 }
 
 .quiz-extras .score-panel {
