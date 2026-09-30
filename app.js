@@ -217,7 +217,12 @@ function renderChoices() {
     btn.disabled = false;
     btn.classList.remove("correct", "incorrect", "key-pressed", "swipe-pressed");
     const text = currentQuestion[`choice_${letter.toLowerCase()}`];
-    btn.textContent = `${letter}. ${text}`;
+    const textEl = btn.querySelector(".choice-text");
+    if (textEl) {
+      textEl.textContent = text;
+    } else {
+      btn.textContent = `${letter}. ${text}`;
+    }
   });
 }
 

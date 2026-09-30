@@ -9,7 +9,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.webmanifest">
   <title>CLF 一問一答</title>
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
   <header class="header">
@@ -32,11 +32,23 @@
         <p class="quiz-label" id="quiz-domain-label">問題</p>
         <p id="quiz-body" class="quiz-body"></p>
 
-        <div id="quiz-choices" class="quiz-choices">
-          <button type="button" class="btn choice-btn" id="choice-btn-a" data-choice="A">A</button>
-          <button type="button" class="btn choice-btn" id="choice-btn-b" data-choice="B">B</button>
-          <button type="button" class="btn choice-btn" id="choice-btn-c" data-choice="C">C</button>
-          <button type="button" class="btn choice-btn" id="choice-btn-d" data-choice="D">D</button>
+        <div id="quiz-choices" class="quiz-choices" role="group" aria-label="選択肢。上A、左B、下C、右D">
+          <button type="button" class="btn choice-btn choice-up" id="choice-btn-a" data-choice="A">
+            <span class="choice-dir" aria-hidden="true">↑ A</span>
+            <span class="choice-text"></span>
+          </button>
+          <button type="button" class="btn choice-btn choice-left" id="choice-btn-b" data-choice="B">
+            <span class="choice-dir" aria-hidden="true">← B</span>
+            <span class="choice-text"></span>
+          </button>
+          <button type="button" class="btn choice-btn choice-down" id="choice-btn-c" data-choice="C">
+            <span class="choice-dir" aria-hidden="true">↓ C</span>
+            <span class="choice-text"></span>
+          </button>
+          <button type="button" class="btn choice-btn choice-right" id="choice-btn-d" data-choice="D">
+            <span class="choice-dir" aria-hidden="true">→ D</span>
+            <span class="choice-text"></span>
+          </button>
         </div>
 
         <p id="swipe-feedback" class="swipe-feedback" aria-live="polite"></p>
@@ -106,6 +118,6 @@
   </main>
 
   <script src="questions.js?v=9"></script>
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>

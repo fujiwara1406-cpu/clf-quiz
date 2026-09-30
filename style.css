@@ -380,18 +380,73 @@ body.is-swipe-lock {
 
 .quiz-choices {
   display: grid;
-  gap: 0.55rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    ". up ."
+    "left . right"
+    ". down .";
+  gap: 0.45rem;
+  align-items: stretch;
+}
+
+.choice-up {
+  grid-area: up;
+  border-top: 4px solid #ff9900;
+}
+
+.choice-left {
+  grid-area: left;
+  border-left: 4px solid #ff9900;
+}
+
+.choice-down {
+  grid-area: down;
+  border-bottom: 4px solid #ff9900;
+}
+
+.choice-right {
+  grid-area: right;
+  border-right: 4px solid #ff9900;
 }
 
 .choice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.3rem;
   width: 100%;
-  min-height: 48px;
-  text-align: left;
+  min-height: 4.75rem;
+  padding: 0.45rem 0.4rem 0.55rem;
+  text-align: center;
   background: #f3f4f6;
   color: #111827;
   white-space: normal;
   word-break: break-word;
-  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06);
+}
+
+.choice-dir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.6rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.choice-text {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .choice-btn:hover:not(:disabled) {
