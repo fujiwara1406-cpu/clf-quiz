@@ -319,7 +319,7 @@ function answer(choice) {
   elements.quizExplain.textContent = currentQuestion.explain || "";
   elements.quizExplain.classList.toggle("hidden", !currentQuestion.explain);
   elements.nextBtn.classList.remove("hidden");
-  elements.swipeFeedback.textContent = "右スワイプで次の問題へ";
+  elements.swipeFeedback.textContent = "右スワイプ / D で次の問題へ";
   updateScore();
   updateSavedUi();
   disarmSwipeLock();
@@ -435,11 +435,13 @@ function onKeyDown(event) {
   if (!isQuizTabActive) {
     return;
   }
-  if (event.key === "Enter" && answered) {
+  const key = event.key.toLowerCase();
+  if (answered && (event.key === "Enter" || key === "d" || event.key === "ArrowRight")) {
+    event.preventDefault();
     showQuestion();
     return;
   }
-  const choice = KEY_TO_CHOICE[event.key.toLowerCase()];
+  const choice = KEY_TO_CHOICE[key];
   if (!choice) {
     return;
   }
