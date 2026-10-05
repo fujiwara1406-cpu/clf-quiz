@@ -238,6 +238,7 @@ function showQuestion() {
   answered = false;
   lastMissedId = null;
   setSaveButtonState("hidden");
+  showStatus("", "");
   elements.quizResult.textContent = "";
   elements.quizResult.className = "quiz-result";
   elements.quizExplain.classList.add("hidden");
