@@ -9,7 +9,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.webmanifest">
   <title>CLF 一問一答</title>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
   <header class="header">
@@ -24,9 +24,6 @@
     </nav>
 
     <section id="quiz-section" class="panel active">
-      <p id="retry-banner" class="retry-banner hidden">保存した問題の解き直し中。正解すると保存から外れます。</p>
-      <button type="button" class="btn btn-secondary hidden" id="exit-retry-btn">通常に戻る</button>
-
       <div id="quiz-card" class="quiz-card">
         <p id="quiz-progress" class="quiz-progress">0 / 0</p>
         <p class="quiz-label" id="quiz-domain-label">問題</p>
@@ -62,6 +59,9 @@
       </div>
 
       <p id="quiz-empty" class="empty-text hidden">この条件の問題がありません。</p>
+
+      <p id="retry-banner" class="retry-banner hidden">保存した問題の解き直し中。正解すると保存から外れます。</p>
+      <button type="button" class="btn btn-secondary hidden" id="exit-retry-btn">通常に戻る</button>
 
       <div class="quiz-extras">
         <p id="status-message" class="status-message" aria-live="polite"></p>
