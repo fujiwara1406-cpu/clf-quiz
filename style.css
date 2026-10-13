@@ -378,6 +378,26 @@ body.is-swipe-lock {
   color: #b45309;
 }
 
+.quiz-importance {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.55rem;
+  line-height: 1.2;
+}
+
+.importance-caption {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.quiz-stars {
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: #d97706;
+}
+
 .quiz-choices {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);

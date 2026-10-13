@@ -24,6 +24,8 @@ const elements = {
   quizEmpty: document.getElementById("quiz-empty"),
   quizProgress: document.getElementById("quiz-progress"),
   quizDomainLabel: document.getElementById("quiz-domain-label"),
+  quizImportance: document.getElementById("quiz-importance"),
+  quizStars: document.getElementById("quiz-stars"),
   quizBody: document.getElementById("quiz-body"),
   quizResult: document.getElementById("quiz-result"),
   quizExplain: document.getElementById("quiz-explain"),
@@ -211,6 +213,24 @@ function pickNext() {
   currentQuestion = source[Math.floor(Math.random() * source.length)];
 }
 
+function starCount(question) {
+  const n = Number(question && question.stars);
+  if (n >= 1 && n <= 5) {
+    return n;
+  }
+  return 3;
+}
+
+function renderStars(question) {
+  const n = starCount(question);
+  if (elements.quizStars) {
+    elements.quizStars.textContent = `${"★".repeat(n)}${"☆".repeat(5 - n)}`;
+  }
+  if (elements.quizImportance) {
+    elements.quizImportance.setAttribute("aria-label", `重要度 ${n} / 5`);
+  }
+}
+
 function renderChoices() {
   ["A", "B", "C", "D"].forEach((letter) => {
     const btn = elements.choiceButtons[letter];
@@ -258,6 +278,7 @@ function showQuestion() {
   elements.quizCard.classList.remove("hidden");
   elements.quizEmpty.classList.add("hidden");
   elements.quizDomainLabel.textContent = DOMAIN_LABEL[currentQuestion.domain] || "問題";
+  renderStars(currentQuestion);
   elements.quizBody.textContent = currentQuestion.body;
   elements.quizProgress.textContent = wrongOnly
     ? `保存した問題 ${pool.length} 問から出題`
@@ -400,7 +421,8 @@ function renderList() {
   ALL_QUESTIONS.forEach((item) => {
     const li = document.createElement("li");
     li.className = "question-item";
-    li.innerHTML = `<p class="question-text">${item.id}. ${item.body}</p><p class="question-meta">${DOMAIN_LABEL[item.domain]}</p>`;
+    const n = starCount(item);
+    li.innerHTML = `<p class="question-text">${item.id}. ${item.body}</p><p class="question-meta">${DOMAIN_LABEL[item.domain]} ／ 重要度 ${"★".repeat(n)}${"☆".repeat(5 - n)}</p>`;
     elements.questionList.appendChild(li);
   });
 }
